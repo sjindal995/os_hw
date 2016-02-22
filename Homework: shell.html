@@ -1,0 +1,289 @@
+<html><head>
+<meta http-equiv="content-type" content="text/html; charset=windows-1252">
+<title>Homework: shell</title>
+<link rel="stylesheet" href="Homework:%20shell_files/homework.html" type="text/css">
+</head>
+<body>
+
+<h1>Homework-1:</h1>
+<h2> Submission Deadline: 27th January, 3PM </h2>
+<h1>Part-1: Shell</h1>
+
+<p>This assignment will make you more familiar with the Unix system call
+interface and the shell by implementing several features in a small shell.
+
+</p><p>Download the <a href="http://www.cse.iitd.ac.in/%7Ekedia/os/sh.c">shell</a>, and look it
+over. The shell contains two main parts: parsing shell commands and
+implementing them. The parser recognizes only simple shell commands such as the
+following:
+
+</p><pre>ls &gt; y
+cat &lt; y | sort | uniq | wc &gt; y1
+cat y1
+rm y1
+ls |  sort | uniq | wc
+rm y
+</pre>
+Cut and paste these commands into a file <tt>t.sh</tt>
+
+<p>To compile <tt>sh.c</tt>, you need a C compiler, such as gcc.  
+
+</p><p>Assuming you have gcc, you can compile the skeleton shell as follows:
+</p><pre>$ gcc sh.c
+</pre>
+which produce an <tt>a.out</tt> file, which you can run:
+<pre>$ ./a.out &lt; t.sh
+or,
+$ ./a.out will give you an interactive shell
+</pre>
+This execution will print error messages because you have not implemented several features. In
+the rest of this assignment you will implement those features.
+
+<h2>1.A. Executing simple commands</h2>
+
+<p>Implement simple commands, such as:
+</p><pre>$ ls
+</pre>
+
+<p> <b>Coding-1: </b>The parser already builds an <tt>execcmd</tt> for you, so the only code you
+have to write is for the ' ' case in <tt>runcmd</tt>. You might find it useful
+to look at the manual page for exec; type "man 3 exec", and read about
+<tt>execv</tt>.  Print an error message when exec fails.
+
+</p><p>To test your program, compile and run the resulting a.out:
+</p><pre>$./a.out
+</pre>
+
+This prints a prompt and waits for input.  <tt>sh.c</tt> prints as prompt
+<tt>OS$</tt> so that you don't get confused with your computer's shell.
+
+Now type to your shell:
+<pre>OS$ ls
+</pre>
+
+<p>Your shell should print an error message (unless there is a program named
+<tt>ls</tt> in your working directory).  Now type to your shell:
+
+</p><pre>OS$ /bin/ls
+</pre>
+
+<p>This should execute the program <tt>/bin/ls</tt>, which should print out the
+file names in your working directory. You can stop the shell by tying
+ctrl-d or Ctrl-c, which should put you back in your computer's shell.
+
+</p><p><b>Coding-2: </b>Change the shell to always try <tt>/bin</tt>, if the program
+doesn't exist in the current working directory, so that below you don't have to
+type "/bin" for each program.</p>
+
+<p>Optional: If you are ambitious you can implement support for a <tt>PATH</tt> variable.</p>
+
+<h2>1.B. I/O redirection</h2>
+
+<p> <b>Coding-3: </b>Implement I/O redirection commands so that you can run:
+</p><pre>echo "This is OS course" &gt; x.txt
+cat &lt; x.txt
+</pre>
+
+<p>The parser already recognizes "&gt;" and "&lt;", and builds a <tt>redircmd</tt> for
+you, so your job is just filling out the missing code in <tt>runcmd</tt> for
+those symbols. You might find the man pages for open and close useful
+
+</p><p>Make sure you print an error message if one of the system calls you are using fails.
+
+</p><p>Make sure your implementation runs correctly with the above test input.  A
+common error is to forget to specify the permission with which the file must be
+created (i.e., the 3rd argument to open).
+
+</p><h2>1.C. Implement pipes</h2>
+
+<p><b>Coding-4: </b>Implement pipes so that you can run command pipelines such as:
+</p><pre>$ ls | sort | uniq | wc
+</pre>
+
+<p>The parser already recognizes "|", and builds a <tt>pipecmd</tt> for you, so
+the only code you must write is for the '|' case in <tt>runcmd</tt>.  You might
+find the man pages for pipe, fork, close, and dup useful.
+
+</p><p>Test that you can run the above pipeline. The <tt>sort</tt> program may be in
+the directory <tt>/usr/bin/</tt> and in that case you can type the absolute
+pathname <tt>/usr/bin/sort</tt> to run sort.  (In your computer's shell you can
+type <tt>which sort</tt> to find out which directory in the shell's search path
+has an executable named "sort".)
+
+</p><p>Now you should be able the following command correctly:
+</p><pre>$ a.out &lt; t.sh
+</pre>
+
+<p>Make sure you use the right absolute pathnames for the programs.
+
+</p><h2> Submission</h2>
+<p>Submission is to be done on the moodle at the appropriate link.
+Just upload your sh.c file, no other file needs to be uploaded with this.</p>
+<p>
+Make sure that your code compiles and works without any special switch being used with gcc.
+e.g. <tt>gcc sh.c </tt>should not give any error.
+
+</p>
+
+<h2> Note</h2>
+
+<p>You completed the design of a basic Unix shell. Supporting any of the below features will require
+changes to be done in the parser as well as the <tt>runcmd</tt> function.
+We leave this to the interest of students for further exploration.
+</p><ul>
+<li> Implement lists of commands, separated by ";"
+</li><li> Implement sub shells by implementing "(" and ")"
+</li><li> Implement running commands in the background by supporting "&amp;" and "wait"
+</li></ul>
+<h1>Part-2: Syscall</h1>
+
+
+<p>
+This homework requires downloading the xv6 learning OS.
+</p><pre>$ <kbd> wget www.cse.iitd.ac.in/~kedia/os/xv6.tar.gz</kbd>
+$ <kbd> tar -zxvf xv6.tar.gz</kbd>
+$ <kbd> cd xv6</kbd>
+</pre>
+<p></p>
+<h4>Booting xv6:</h4>
+<p>
+Similar to our JOS, you need to type the below commands to boot xv6:
+</p><pre>$ <kbd> make</kbd>
+$ <kbd> make qemu</kbd>
+</pre>
+<p></p>
+
+<h2><b> Coding-1</b>: System call tracing</h2>
+
+Your first task is to modify the xv6 kernel to print out a line for
+each system call invocation. It is enough to print the name of the
+system call and the return value; you don't need to print the system
+call arguments.
+
+<p>
+When you're done, you should see output like this when booting
+xv6:
+
+</p><pre>...
+fork -&gt; 2
+exec -&gt; 0
+open -&gt; 3
+close -&gt; 0
+$write -&gt; 1
+ write -&gt; 1
+</pre>
+
+<p>
+That's init forking and execing sh, sh making sure only two file
+descriptors are open, and sh writing the $ prompt.
+
+</p><p>
+<b>Hint:</b> modify the syscall() function in syscall.c.
+
+</p><h2><b>Coding-2</b>: Date system call</h2>
+
+Your second task is to add a new system call to xv6. The main point of
+the exercise is for you to see some of the different pieces of the
+system call machinery.
+
+Your new system call will get the current time and return it to the user
+program. You may want to use the helper function, <tt>cmostime()</tt>
+(defined in <tt>lapic.c</tt>), to read the real time clock. <tt>date.h</tt>
+contains the definition of the <tt>struct rtcdate</tt> struct, which you will
+provide as an argument to <tt>cmostime()</tt> as a pointer.
+
+<p>
+You should create a user-level program that calls your new date system
+call; here's some source you should put in <tt>date.c</tt>:
+
+</p><pre>#include "types.h"
+#include "user.h"
+#include "date.h"
+
+int
+main(int argc, char *argv[])
+{
+  struct rtcdate r;
+
+  if (date(&amp;r)) {
+    printf(2, "date failed\n");
+    exit();
+  }
+
+  // your code to print the time in any format you like...
+  /* example output format should be like this:
+     Year: 2016
+	 Month: 1 or January
+	 Date: 26
+	 Hour: 15
+	 Minute: 12
+	 Second: 11
+
+  */
+
+
+  exit();
+}
+</pre>
+
+<p>
+In order to make your new <tt>date</tt> program available to run from
+the xv6 shell, add <tt>_date</tt> to the <tt>UPROGS</tt> definition
+in <tt>Makefile</tt>.
+
+</p><p>
+Your strategy for making a date system call should be to clone all of
+the pieces of code that are specific to some existing system call, for
+example the "uptime" system call. You should grep for uptime in all
+the source files, using <tt>grep -n uptime *.[chS]</tt>.
+
+</p><p>
+When you're done, typing <tt>date</tt> to an xv6 shell prompt
+should print the current time.
+
+</p><h2><b>Coding-3</b>: dup2() system call.</h2>
+<p>
+Read Linux man pages for description on dup2 system call.
+xv6 doesn't implement the dup2 system call by default and you are required to implement dup2 as a part
+of this assignment.
+</p>
+<p>
+The function prototype for dup2 is as below:</p>
+<p>
+      <tt>int dup2(int oldfd, int newfd);</tt>
+</p>
+<p>
+The difference from the native dup call is that instead of allocating the first available file descriptor,
+the user can specify through newfd which exact file descriptor should be used.
+</p>
+<p>
+
+<b>Hint:</b> Look into the sys_dup function in the file syscall.c
+
+</p>
+<p>
+Similar to date syscall, you can check the functioning of dup2 system call
+by creating your own user program and making it available to the xv6 shell.
+
+</p>
+<h2> Submission</h2>
+<p>Submission is to be done on the moodle at the appropriate link.
+Just bundle the modified files as per below instructions.</p>
+<p>
+Follow the below instructions <br>
+   <tt>make clean</tt><br>
+   <tt>tar -zcvf xv6.tar.gz * --exclude .git</tt><br>
+   <tt>base64 xv6.tar.gz &gt; xv6.tar.gz.b64</tt>
+</p>
+<p>
+   <b>Upload the file named  xv6.tar.gz.b64</b>
+</p>
+
+<p><br><br>
+</p>
+<p>
+</p>
+
+
+
+</body></html>
